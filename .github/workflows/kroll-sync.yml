@@ -2,12 +2,15 @@ name: Kroll inventory sync
 
 on:
   schedule:
-    - cron: "10,25,40,55 * * * *"   # every 15 minutes, 24 hours a day (leaves :37 free for Bulk Product Editor)
+    - cron: "10,25,40,55 * * * *"   # every 15 minutes, 24 hours a day
   workflow_dispatch:      # adds a "Run workflow" button for manual runs
 
 concurrency:
   group: kroll-sync
   cancel-in-progress: false
+
+permissions:
+  contents: write   # lets the run save a one-line result to the "sync-status" branch
 
 jobs:
   sync:
@@ -20,6 +23,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - name: Run sync
+        id: sync
         env:
           KROLL_SFTP_USER: ${{ secrets.KROLL_SFTP_USER }}
           KROLL_SFTP_PASSWORD: ${{ secrets.KROLL_SFTP_PASSWORD }}
@@ -33,7 +37,9 @@ jobs:
           ONLY_VENDORS: ${{ vars.ONLY_VENDORS }}
           SAFETY_BUFFER: ${{ vars.SAFETY_BUFFER }}
           DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
-        run: python kroll_inventory_sync.py
+        run: |
+          set -o pipefail
+          python kroll_inventory_sync.py 2>&1 | tee run.log
       - name: Save report
         if: always()
         uses: actions/upload-artifact@v4
@@ -41,3 +47,30 @@ jobs:
           name: kroll-sync-report-${{ github.run_number }}
           path: reports/
           retention-days: 14
+          if-no-files-found: ignore
+      - name: Record result for notifications
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.sync.outcome }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          PT=$(TZ=America/Los_Angeles date '+%b %-d %-I:%M %p')
+          if [ "$OUTCOME" = "success" ]; then RESULT=OK; else RESULT=FAILED; fi
+          DETAIL=$(grep -E "Done\.|Dry run finished|STOPPED|Matched" run.log 2>/dev/null \
+                   | sed -E 's/^\[[^]]*\] //; s/ ?Report: .*//; s/Review the report.*//' | tr '\n' ' ')
+          if [ -z "$DETAIL" ]; then DETAIL=$(tail -n 1 run.log 2>/dev/null || echo "no log"); fi
+          LINE="$UTC | $PT PT | $RESULT | $(echo "$DETAIL" | tr '|' '/' | sed 's/  */ /g') | $RUN_URL"
+          echo "$LINE"
+          mkdir -p "$RUNNER_TEMP/status" && cd "$RUNNER_TEMP/status"
+          git init -q
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git remote add origin "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          if git fetch -q --depth 1 origin sync-status; then git checkout -q -B sync-status FETCH_HEAD; else git checkout -q -b sync-status; fi
+          echo "$LINE" >> status.log
+          tail -n 2000 status.log > status.tmp && mv status.tmp status.log
+          git add status.log
+          git commit -q -m "Sync result $UTC"
+          git push -q origin sync-status
