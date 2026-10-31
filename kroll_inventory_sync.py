@@ -123,7 +123,7 @@ def download_kroll_file() -> bytes:
 # --------------------------------------------------------------------------
 
 SKU_COLUMN_GUESSES = [
-    "sku", "item", "item #", "item no", "item number", "itemnumber", "item_number",
+    "sku", "item id", "itemid", "item", "item #", "item no", "item number", "itemnumber", "item_number",
     "part", "part #", "part number", "partnumber", "stock number", "stock #",
     "kroll #", "kroll sku", "product code", "productcode", "style",
 ]
