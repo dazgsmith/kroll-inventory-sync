@@ -425,6 +425,9 @@ def write_report(report, dry_run: bool) -> Path:
     out_dir.mkdir(exist_ok=True)
     stamp = datetime.now().strftime("%Y-%m-%d_%H%M")
     path = out_dir / f"kroll_sync_{stamp}{'_DRYRUN' if dry_run else ''}.csv"
+    # Only list items that changed, failed, or were skipped. Unchanged items are left out
+    # so the report stays small (and doesn't publish the whole catalog's stock counts).
+    report = [r for r in report if r["action"] != "no change"]
     fields = ["sku", "kroll_sku", "product", "vendor", "kroll_qty", "old_qty", "new_qty", "action"]
     with path.open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fields)
