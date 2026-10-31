@@ -23,7 +23,7 @@ It has to run somewhere that can reach Kroll's SFTP server. Pick one:
 
 | Option | Good for | Needs |
 |---|---|---|
-| **A. GitHub Actions** (recommended) | Runs in the cloud every hour; no computer needs to stay on | A free GitHub account |
+| **A. GitHub Actions** (recommended) | Runs in the cloud every 15 minutes; no computer needs to stay on | A free GitHub account |
 | **B. Your office Windows PC** | Simple, if a PC is always on | Python installed |
 
 > **Note:** If Kroll only allows logins from approved IP addresses, use option B and give Kroll your office IP. GitHub's IP addresses change.
@@ -48,7 +48,7 @@ The script updates your **Shop location**. This is already the default, so you d
 
 ---
 
-## Option A: GitHub Actions (every hour, in the cloud)
+## Option A: GitHub Actions (every 15 minutes, in the cloud)
 
 1. Create a **private** repository on GitHub and upload all of these files, including the `.github` folder. Don't upload a `.env` file.
 2. In the repository, go to **Settings → Secrets and variables → Actions**.
@@ -60,7 +60,7 @@ The script updates your **Shop location**. This is already the default, so you d
    - `DRY_RUN` – `true` for now
 5. Go to the **Actions** tab → **Kroll inventory sync** → **Run workflow**. That's your new "Run now" button.
 6. When it finishes, open the run and download the report under **Artifacts**. Check that the numbers look right.
-7. Change the `DRY_RUN` variable to `false`. From then on it runs every hour, at 7 minutes past, 24 hours a day.
+7. Change the `DRY_RUN` variable to `false`. From then on it runs every 15 minutes (10, 25, 40, and 55 past each hour), 24 hours a day.
 
 ## Option B: Office Windows PC
 
