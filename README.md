@@ -23,7 +23,7 @@ It has to run somewhere that can reach Kroll's SFTP server. Pick one:
 
 | Option | Good for | Needs |
 |---|---|---|
-| **A. GitHub Actions** (recommended) | Runs in the cloud every 30 minutes; no computer needs to stay on | A free GitHub account |
+| **A. GitHub Actions** (recommended) | Runs in the cloud every hour; no computer needs to stay on | A free GitHub account |
 | **B. Your office Windows PC** | Simple, if a PC is always on | Python installed |
 
 > **Note:** If Kroll only allows logins from approved IP addresses, use option B and give Kroll your office IP. GitHub's IP addresses change.
@@ -48,7 +48,7 @@ The script updates your **Shop location**. This is already the default, so you d
 
 ---
 
-## Option A: GitHub Actions (every 30 minutes, in the cloud)
+## Option A: GitHub Actions (every hour, in the cloud)
 
 1. Create a **private** repository on GitHub and upload all of these files, including the `.github` folder. Don't upload a `.env` file.
 2. In the repository, go to **Settings → Secrets and variables → Actions**.
@@ -60,7 +60,7 @@ The script updates your **Shop location**. This is already the default, so you d
    - `DRY_RUN` – `true` for now
 5. Go to the **Actions** tab → **Kroll inventory sync** → **Run workflow**. That's your new "Run now" button.
 6. When it finishes, open the run and download the report under **Artifacts**. Check that the numbers look right.
-7. Change the `DRY_RUN` variable to `false`. From then on it runs every 30 minutes (at 7 and 37 minutes past each hour).
+7. Change the `DRY_RUN` variable to `false`. From then on it runs every hour, at 7 minutes past, 24 hours a day.
 
 ## Option B: Office Windows PC
 
@@ -75,7 +75,7 @@ The script updates your **Shop location**. This is already the default, so you d
 4. Copy `.env.example` to `.env`, open it in Notepad, and fill it in.
 5. Double-click `run_sync.bat`. Check `sync_log.txt` and the newest file in `reports`.
 6. When the report looks right, change `DRY_RUN=true` to `DRY_RUN=false` in `.env`.
-7. Schedule it: open **Task Scheduler → Create Basic Task**, set the trigger to **Daily**, and set the action to start `C:\KrollSync\run_sync.bat`. Then open the task's **Triggers** tab, edit the trigger, and check **Repeat task every 30 minutes** for **Indefinitely**. Also check **Run whether user is logged on or not**.
+7. Schedule it: open **Task Scheduler → Create Basic Task**, set the trigger to **Daily**, and set the action to start `C:\KrollSync\run_sync.bat`. Then open the task's **Triggers** tab, edit the trigger, and check **Repeat task every 1 hour** for **Indefinitely**. Also check **Run whether user is logged on or not**.
 
 ---
 

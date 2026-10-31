@@ -2,7 +2,7 @@ name: Kroll inventory sync
 
 on:
   schedule:
-    - cron: "7,37 * * * *"   # every 30 minutes (7 and 37 past each hour)
+    - cron: "7 * * * *"   # every hour, at 7 minutes past, 24 hours a day
   workflow_dispatch:      # adds a "Run workflow" button for manual runs
 
 concurrency:
