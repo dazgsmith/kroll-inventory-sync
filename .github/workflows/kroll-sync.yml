@@ -1,0 +1,43 @@
+name: Kroll inventory sync
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"   # every 30 minutes (7 and 37 past each hour)
+  workflow_dispatch:      # adds a "Run workflow" button for manual runs
+
+concurrency:
+  group: kroll-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Run sync
+        env:
+          KROLL_SFTP_USER: ${{ secrets.KROLL_SFTP_USER }}
+          KROLL_SFTP_PASSWORD: ${{ secrets.KROLL_SFTP_PASSWORD }}
+          SHOPIFY_CLIENT_ID: ${{ secrets.SHOPIFY_CLIENT_ID }}
+          SHOPIFY_CLIENT_SECRET: ${{ secrets.SHOPIFY_CLIENT_SECRET }}
+          SHOPIFY_ACCESS_TOKEN: ${{ secrets.SHOPIFY_ACCESS_TOKEN }}
+          SHOPIFY_LOCATION_NAME: ${{ vars.SHOPIFY_LOCATION_NAME || 'Shop location' }}
+          KROLL_SKU_COLUMN: ${{ vars.KROLL_SKU_COLUMN }}
+          KROLL_QTY_COLUMN: ${{ vars.KROLL_QTY_COLUMN }}
+          SHOPIFY_SKU_PREFIX: ${{ vars.SHOPIFY_SKU_PREFIX }}
+          ONLY_VENDORS: ${{ vars.ONLY_VENDORS }}
+          SAFETY_BUFFER: ${{ vars.SAFETY_BUFFER }}
+          DRY_RUN: ${{ vars.DRY_RUN || 'true' }}
+        run: python kroll_inventory_sync.py
+      - name: Save report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kroll-sync-report-${{ github.run_number }}
+          path: reports/
+          retention-days: 14
