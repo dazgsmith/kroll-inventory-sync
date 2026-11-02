@@ -3,3 +3,4 @@
 2026-11-01T09:55:32Z | Nov 1 1:55 AM PT | OK | Matched 66,603 Shopify variants to Kroll SKUs. 10 need a new quantity (0 would go to zero). Done. Updated 10 items, 0 failed.  | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/41294736276
 2026-11-01T16:31:06Z | Nov 1 8:31 AM PT | FAILED | paramiko.ssh_exception.SSHException: Unable to connect to ftp.krollcorp.com: [Errno 110] Connection timed out | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/41326525994
 2026-11-01T20:50:51Z | Nov 1 12:50 PM PT | FAILED | paramiko.ssh_exception.SSHException: Unable to connect to ftp.krollcorp.com: [Errno 110] Connection timed out | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/41348739249
+2026-11-02T00:00:31Z | Nov 1 4:00 PM PT | FAILED | paramiko.ssh_exception.SSHException: Unable to connect to ftp.krollcorp.com: [Errno 110] Connection timed out | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/41364657995
