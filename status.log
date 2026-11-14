@@ -51,3 +51,4 @@
 2026-11-13T18:02:48Z | Nov 13 10:02 AM PT | OK | Matched 66,517 Shopify variants to Kroll SKUs. 20 need a new quantity (1 would go to zero). Done. Updated 20 items, 0 failed.  | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/43477659025
 2026-11-13T23:32:58Z | Nov 13 3:32 PM PT | FAILED |  | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/43527391035
 2026-11-14T03:38:24Z | Nov 13 7:38 PM PT | OK | Matched 66,517 Shopify variants to Kroll SKUs. 11 need a new quantity (0 would go to zero). Done. Updated 11 items, 0 failed.  | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/43552083973
+2026-11-14T10:59:45Z | Nov 14 2:59 AM PT | OK | Matched 66,517 Shopify variants to Kroll SKUs. 4 need a new quantity (1 would go to zero). Done. Updated 4 items, 0 failed.  | https://github.com/dazgsmith/kroll-inventory-sync/actions/runs/43587359237
